@@ -23,8 +23,8 @@ QColor TrainDraw::valueColor(int value, ValueColorType VCT)
          int colorVal=((256*7)/range)*(value-bounds[0]);
          int j = colorVal/256 + 1;
          for(int i=0; i<3; i++){
-            rgb[i]=128+(fColor[i][j-1])*128;
-            if(fColor[i][j-1]!=fColor[i][j])
+            rgb[i]=127.5*(fColor[i][j-1]+1);
+            if (fColor[i][j-1]!=fColor[i][j])
                rgb[i]+=fColor[i][j]*(colorVal%256);
             }
          } break;
