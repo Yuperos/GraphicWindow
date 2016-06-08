@@ -27,4 +27,4 @@ SOURCES += main.cpp\
 HEADERS  += graphicwindow.h \
     traindraw.h
 
-FORMS    += graphicwindow.ui
+FORMS    +=

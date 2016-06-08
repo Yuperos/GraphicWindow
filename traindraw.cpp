@@ -1,17 +1,24 @@
 #include "traindraw.h"
 
 
-void TrainDraw::findBorders()
+void TrainDraw::findBorders(QList<qreal> *li)
    {
-   if(trains->isEmpty() || trains->at(0).isEmpty()) return;
-   bounds[0]=bounds[1]=trains->at(0).at(0);
-   for(auto a : *trains){
-      for(auto b : a){
-         if(bounds[0]>b) bounds[0]=b;
-         if(bounds[1]<b) bounds[1]=b;
-         }
+   qreal temp[2] ={li->at(0), li->at(0)};
+
+   for(auto a : *li){
+      if(temp[0]>a) temp[0]=a;
+      if(temp[1]<a) temp[1]=a;
       }
+   bounds[0]=bounds[0]*(1.-bounds[2])+temp[0]*bounds[2];
+   bounds[1]=bounds[1]*(1.-bounds[2])+temp[1]*bounds[2];
+   bounds[2]*=0.9;
    }
+
+bool TrainDraw::canImproveBounds()
+   {
+   return bounds[2]>0.00001;
+   }
+
 
 QColor TrainDraw::valueColor(int value, ValueColorType VCT)
    {
@@ -38,35 +45,14 @@ QColor TrainDraw::valueColor(int value, ValueColorType VCT)
    return QColor(rgb[0],rgb[1],rgb[2]);
    }
 
-void TrainDraw::draw()
-   {
-   QBrush     brush = QBrush(QColor(0,153,255));
-   QPen       pen = QPen(QColor(0,153,255),0);
-   findBorders();
-   gs->clear();
-
-   QPointF scale((qreal)gs->width()/trains->at(0).count(), (qreal)gs->height()/trains->count());
-   for(int i=0; i<trains->count(); i++){
-      for(int j=0; j<trains->at(i).count(); j++){
-         pen.setColor(valueColor(trains->at(i).at(j)));
-         brush.setColor(pen.color());
-         qreal a[4];
-         a[0]=scale.rx()*pow(2,i)*j;
-         a[1]=scale.ry()*i;
-         a[2]=scale.rx()*pow(2.,i);
-         a[3]=scale.ry();
-         gs->addPolygon(QPolygonF(QRectF(a[0], a[1], a[2], a[3])), pen,brush);
-         }
-      }
-   }
 
 TrainDraw::TrainDraw()
    {
-
+   init();
    }
 
 void TrainDraw::init()
    {
-
+   bounds[0]=bounds[1]=bounds[2]=1;
    }
 
